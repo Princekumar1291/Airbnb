@@ -7,6 +7,7 @@ const homeFilePath=path.join(rootDir,'data','homes.json');
 
 class Homes{
   constructor(houseName,price,location,description,rating,photoUrl){
+    this.id=Math.random().toString();
     this.houseName=houseName;
     this.price=price;
     this.location=location;
@@ -33,6 +34,14 @@ class Homes{
       }
     })
   }
+
+  static findById(id,callback){
+    Homes.fetchall((registerHomes)=>{
+      const home=registerHomes.find(home=>home.id===id);
+      callback(home);
+    });
+  }
+  
 } 
 
 module.exports=Homes;

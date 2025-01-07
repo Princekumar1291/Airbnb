@@ -10,6 +10,7 @@ const bodyparser=require('body-parser');
 const {hostRouter} = require('./router/hostRouter');
 const storeRouter = require('./router/storeRouter');
 const rootDir = require('./utils/path-util');
+const errorRouter = require('./router/errorRouter');
 
 //Middlewares
 app.use(express.static(path.join(rootDir,"public")));
@@ -21,10 +22,7 @@ app.set("views",path.join(rootDir,"views")); //Set the views directory
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(storeRouter);
 app.use('/host',hostRouter);
-
-app.use((req,res,next)=>{
-  res.render('404',{title:"404"});
-})
+app.use(errorRouter)
 
 const PORT=3000;
 app.listen(PORT,()=>{

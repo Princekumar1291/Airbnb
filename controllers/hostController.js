@@ -38,4 +38,12 @@ const postEditHome=(req,res)=>{
   });
 }
 
-module.exports = { getAddhome, postAddhome , getHostHomes, getEditHome,postEditHome };
+const deleteHome=(req,res)=>{
+  const HomeId = req.params.id;
+  Homes.deleteById(HomeId, (error) => {
+    if (error) console.log(error);
+  });
+  res.redirect('/host/host-homes');
+}
+
+module.exports = { getAddhome, postAddhome , getHostHomes, getEditHome,postEditHome,deleteHome};

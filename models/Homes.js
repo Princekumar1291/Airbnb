@@ -53,6 +53,13 @@ class Homes {
     });
   }
 
+  static deleteById(id, callback) {
+    Homes.fetchall((registerHomes) => {
+      registerHomes = registerHomes.filter(home => home.id !== id);
+      fs.writeFile(homeFilePath, JSON.stringify(registerHomes), callback);
+    });
+  }
+
 }
 
 module.exports = Homes;

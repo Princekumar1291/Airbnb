@@ -8,5 +8,6 @@ storeRouter.get('/homes',storeController.getHome);
 storeRouter.get('/homes/:id',storeController.getHomeDetails);
 storeRouter.get('/favorites',storeController.getFavorites);
 storeRouter.post('/favorites',storeController.postFavorites);
+storeRouter.post('/favorites/delete/:id',storeController.deleteFavorites);
 
 module.exports = storeRouter;

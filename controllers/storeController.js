@@ -35,5 +35,13 @@ const postFavorites = (req, res) => {
   });
 }
 
+const deleteFavorites=(req,res)=>{
+  const HomeId = req.params.id;
+  Favourites.removeFromFavourites(HomeId,(error)=>{
+    if(error) console.log(error);
+  });
+  res.redirect('/favorites');
+}
 
-module.exports = { getIndex, getHome, getHomeDetails, getFavorites, postFavorites};
+
+module.exports = { getIndex, getHome, getHomeDetails, getFavorites, postFavorites,deleteFavorites};

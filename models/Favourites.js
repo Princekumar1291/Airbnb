@@ -24,7 +24,18 @@ class Favourites{
 
   static addToFavourites(id,callback){
     Favourites.fetchAll((favourites)=>{
+      if(favourites.includes(id)){
+        callback("Already added to favourites");
+        return;
+      }
       favourites.push(id);
+      fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
+    });
+  }
+
+  static removeFromFavourites(id,callback){
+    Favourites.fetchAll((favourites)=>{
+      favourites=favourites.filter(favourite=>favourite!==id);
       fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
     });
   }

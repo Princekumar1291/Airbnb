@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const rootDir = require('../utils/path-util');
+const Favourites = require('./Favourites');
 const homeFilePath = path.join(rootDir, 'data', 'homes.json');
 
 
@@ -54,6 +55,7 @@ class Homes {
   }
 
   static deleteById(id, callback) {
+    Favourites.removeFromFavourites(id,(error)=>{if(error) console.log(error);});
     Homes.fetchall((registerHomes) => {
       registerHomes = registerHomes.filter(home => home.id !== id);
       fs.writeFile(homeFilePath, JSON.stringify(registerHomes), callback);

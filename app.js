@@ -21,7 +21,7 @@ app.set("views",path.join(rootDir,"views")); //Set the views directory
 
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(storeRouter);
-app.use('/host',hostRouter);
+app.use('/host',hostRouter); 
 app.use(errorRouter)
 
 const PORT=3000;

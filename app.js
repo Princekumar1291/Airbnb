@@ -6,7 +6,6 @@ const express = require('express');
 const app=express();
 const bodyparser=require('body-parser');
 
-
 //Internal modules
 const {hostRouter} = require('./router/hostRouter');
 const storeRouter = require('./router/storeRouter');
@@ -26,6 +25,10 @@ app.use('/host',hostRouter);
 app.use(errorRouter)
 
 const PORT=3000;
-app.listen(PORT,()=>{
-  console.log(`Server is running at http://localhost:${PORT}`);
+const {mongoConnect}=require('./utils/database-utils');
+
+mongoConnect(()=>{
+  app.listen(PORT,()=>{
+    console.log(`Server is running at http://localhost:${PORT}`);
+  })
 })

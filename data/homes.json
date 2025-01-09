@@ -1,11 +1,11 @@
 [
   {
-    "id": "0.470981743086449",
+    "_id": "0.470981743086449",
     "houseName": "house2",
     "price": "1200",
     "location": "pubjab",
     "rating": "4",
     "description": "good home",
-    "photoUrl": "https://media.istockphoto.com/id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4="
+    "photoUrl": "https://media.istockphoto.com/_id/1255835530/photo/modern-custom-suburban-home-exterior.jpg?s=612x612&w=0&k=20&c=0Dqjm3NunXjZtWVpsUvNKg2A4rK2gMvJ-827nb4AMU4="
   }
 ]

@@ -1,10 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-const rootDir = require('../utils/path-util');
-const Favourites = require('./Favourites');
-const homeFilePath = path.join(rootDir, 'data', 'homes.json');
-
-
+const { ObjectId } = require('mongodb');
+const { getDb } = require('../utils/database-utils');
 
 class Homes {
   constructor(houseName, price, location, description, rating, photoUrl) {
@@ -15,52 +10,35 @@ class Homes {
     this.description = description;
     this.photoUrl = photoUrl;
   }
-  save(callback) {
-    Homes.fetchall((registerHomes) => {
-      if (this.id) {
-        registerHomes = registerHomes.map(home => {
-          if (home.id === this.id) {
-            return this;
-          } else {
-            return home;
-          }
-        })
-      }
-      else {
-        this.id = Math.random().toString();
-        registerHomes.push(this);
-      }
-      fs.writeFile(homeFilePath, JSON.stringify(registerHomes), callback);
-    });
+
+  save() {
+    const db = getDb();
+    return db.collection('homes').insertOne(this);
   }
 
-  static fetchall(callback) {
-    fs.readFile(homeFilePath, (err, data) => {
-      if (err) {
-        callback([]);
-      } else {
-        if (data.length === 0) {
-          callback([]);
-        }
-        else callback(JSON.parse(data));
-      }
-    })
+  static fetchall() {
+    const db=getDb();
+    return db.collection('homes').find().toArray();
   }
 
-  static findById(id, callback) {
-    Homes.fetchall((registerHomes) => {
-      const home = registerHomes.find(home => home.id === id);
-      callback(home);
-    });
+  static findById(_id) {
+    const db=getDb();
+    const objectId = new ObjectId(_id);
+    return db.collection('homes').findOne({_id:objectId});
   }
 
-  static deleteById(id, callback) {
-    Favourites.removeFromFavourites(id,(error)=>{if(error) console.log(error);});
-    Homes.fetchall((registerHomes) => {
-      registerHomes = registerHomes.filter(home => home.id !== id);
-      fs.writeFile(homeFilePath, JSON.stringify(registerHomes), callback);
-    });
+  static deleteById(_id) {
+    const db=getDb();
+    const objectId = new ObjectId(_id);
+    return db.collection('homes').deleteOne({_id:objectId});
   }
+
+  static updateById(_id,houseName,price,location,description,rating,photoUrl) {
+    const db=getDb();
+    const objectId = new ObjectId(_id);
+    return db.collection('homes').updateOne({_id:objectId},{$set:{houseName:houseName,price:price,location:location,description:description,rating:rating,photoUrl:photoUrl}}); 
+  }
+
 
 }
 

@@ -22,20 +22,20 @@ class Favourites{
     })
   }
 
-  static addToFavourites(id,callback){
+  static addToFavourites(_id,callback){
     Favourites.fetchAll((favourites)=>{
-      if(favourites.includes(id)){
+      if(favourites.includes(_id)){
         callback("Already added to favourites");
         return;
       }
-      favourites.push(id);
+      favourites.push(_id);
       fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
     });
   }
 
-  static removeFromFavourites(id,callback){
+  static removeFromFavourites(_id,callback){
     Favourites.fetchAll((favourites)=>{
-      favourites=favourites.filter(favourite=>favourite!==id);
+      favourites=favourites.filter(favourite=>favourite!==_id);
       fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
     });
   }

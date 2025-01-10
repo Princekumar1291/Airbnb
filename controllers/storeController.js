@@ -25,29 +25,39 @@ const getHomeDetails = (req, res) => {
 }
 
 const getFavorites = (req, res) => {
-  Favourites.fetchAll((favouritesIds) => {
-    Homes.fetchall().then(([registerHomes]) => {
-      const favouriteHomes = registerHomes.filter(home => favouritesIds.includes(home._id));
+  Favourites.fetchAll().then((favouritesIds) => {
+    favouritesIds=favouritesIds.map(favourite => favourite.homeId);
+    Homes.fetchall().then((registerHomes) => {
+      const favouriteHomes = registerHomes.filter(home => favouritesIds.includes(home._id.toString()));
       res.render('store/favorites', { homes: favouriteHomes, title: "Favorites" })
     })
   })
 }
 
 const postFavorites = (req, res) => {
-  let _id = req.body._id;
-  console.log(req.body);
-  Favourites.addToFavourites(_id, (error) => {
-    if (error) console.log(error);
+  let homeId = req.body._id;
+  Favourites.findById(homeId).then((favourite) => {
+    if (favourite) {
+      return res.redirect('/favorites');
+    }
+    let fav = new Favourites(homeId);
+    return fav.save().then(() => {
+      res.redirect('/favorites');
+    })
+  }).catch(err => {
+    console.error('Error adding home to favorites:', err);
     res.redirect('/favorites');
   });
 }
 
-const deleteFavorites = (req, res) => {
-  const _id = req.params._id;
-  Favourites.removeFromFavourites(_id, (error) => {
-    if (error) console.log(error);
+const deleteFavorites=(req,res)=>{
+  let homeId = req.params._id;
+  Favourites.deleteById(homeId).then(() => {
+    console.log(homeId);
+    res.redirect('/favorites');
+  }).catch(err => {
+    console.error('Error deleting home from favorites:', err);
   });
-  res.redirect('/favorites');
 }
 
 

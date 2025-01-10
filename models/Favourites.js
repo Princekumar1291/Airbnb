@@ -1,43 +1,30 @@
-const fs=require('fs');
-const path=require('path');
-const rootDir=require('../utils/path-util');
-const favouritesFilePath=path.join(rootDir,'data','favourites.json');
+const { ObjectId } = require("mongodb");
+const { getDb } = require("../utils/database-utils");
 
 class Favourites{
   
-  constructor(){
-    this.favourites = [];
+  constructor(homeId){
+    this.homeId=homeId;    
   }
 
-  static fetchAll(callback){
-    fs.readFile(favouritesFilePath,(err,data)=>{
-      if(err){
-        callback([]);
-      }else{
-        if(data.length===0){
-          callback([]);
-        }
-        else callback(JSON.parse(data));
-      }
-    })
+  save(){
+    const db=getDb();
+    return db.collection('favourites').insertOne(this);
   }
 
-  static addToFavourites(_id,callback){
-    Favourites.fetchAll((favourites)=>{
-      if(favourites.includes(_id)){
-        callback("Already added to favourites");
-        return;
-      }
-      favourites.push(_id);
-      fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
-    });
+  static fetchAll(){
+    const db=getDb();
+    return db.collection('favourites').find().toArray();
   }
 
-  static removeFromFavourites(_id,callback){
-    Favourites.fetchAll((favourites)=>{
-      favourites=favourites.filter(favourite=>favourite!==_id);
-      fs.writeFile(favouritesFilePath,JSON.stringify(favourites),callback);
-    });
+  static deleteById(homeId){
+    const db=getDb();
+    return db.collection('favourites').deleteOne({homeId:homeId});
+  }
+
+  static findById(homeId){
+    const db=getDb();
+    return db.collection('favourites').findOne({homeId:homeId});
   }
 
 }

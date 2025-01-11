@@ -1,5 +1,4 @@
 const { ObjectId } = require("mongodb");
-const { getDb } = require("../utils/database-utils");
 
 class Favourites{
   

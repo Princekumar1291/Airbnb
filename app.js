@@ -34,4 +34,3 @@ mongoose.connect(mongoDbUrl).then(() => {
 }).catch((error) => {
   console.log(error);
 })
-

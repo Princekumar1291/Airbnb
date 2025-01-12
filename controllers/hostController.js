@@ -1,3 +1,4 @@
+const Favourite = require('../models/Favourite.js');
 const Home = require('../models/Home.js');
 
 const getAddhome = (req, res) => {
@@ -52,6 +53,11 @@ const postEditHome = (req, res) => {
 
 const deleteHome = (req, res) => {
   const _id = req.params._id;
+  Favourite.deleteOne({ homeId: _id }).then(() => {
+    console.log('Home deleted from favorites');
+  }).catch(err => {
+    console.error('Error deleting home from favorites:', err);
+  })
   Home.findOneAndDelete(_id).then(() => {
     res.redirect('/host/host-homes');
   }).catch(err => {

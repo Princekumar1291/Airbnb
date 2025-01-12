@@ -3,13 +3,22 @@ const getLogin=(req,res)=>{
 }
 
 const postLogin=(req,res)=>{
-  res.cookie('isLoggedIn', true, { maxAge: 900000 });
-  res.redirect('/');
+  req.session.isLoggedIn = true;
+  res.redirect('/homes');
 }
 
 const logout=(req,res)=>{
-  res.clearCookie('isLoggedIn');
+  req.session.destroy();
   res.redirect('/auth/login');
 }
 
-module.exports={getLogin,postLogin,logout};
+const getSignup=(req,res)=>{
+  res.render('auth/signup', { title: "Signup" , isLoggedIn: false});
+}
+
+const postSignup=(req,res)=>{
+  console.log(req.body);
+  res.redirect('/auth/login');
+}
+
+module.exports={getLogin,postLogin,logout,getSignup,postSignup};

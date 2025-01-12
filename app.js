@@ -1,3 +1,5 @@
+const MONGO_DB_URL = "mongodb+srv://princekumar7320918928:pAOc56hFAYtRLPwu@princecluster.ns8if.mongodb.net/airbnb?retryWrites=true&w=majority&appName=PrinceCluster";
+
 //Core modules
 const path = require('path');
 
@@ -6,7 +8,15 @@ const express = require('express');
 const app = express();
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
+const session = require("express-session");
+const MongoDBStore = require('connect-mongodb-session')(session);
+
+// Database connection for sessions
+const sessionStore = new MongoDBStore({
+  uri: MONGO_DB_URL,
+  collection: 'sessions'
+});
+
 
 //Internal modules
 const { hostRouter } = require('./router/hostRouter');
@@ -17,7 +27,16 @@ const { authRouter } = require('./router/authRouter');
 
 //Middlewares
 app.use(express.static(path.join(rootDir, "public")));
-app.use(cookieParser());
+
+app.use(session({
+  secret: "Mern Live Batch",
+  saveUninitialized: true,
+  resave: false,
+  store: sessionStore,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+  },
+}));
 
 //Set the view engine
 app.set("view engine", "ejs"); //Set the view engine
@@ -29,7 +48,7 @@ app.use(storeRouter);
 app.use("/auth",authRouter);
 
 app.use((req, res, next) => {
-  if (!req.cookies.isLoggedIn ) {
+  if (!req.session.isLoggedIn ) {
     return res.redirect('/auth/login');    
   }
   next();
@@ -39,8 +58,7 @@ app.use('/host', hostRouter);
 app.use(errorRouter)
 
 const PORT = 3000;
-const mongoDbUrl = "mongodb+srv://princekumar7320918928:pAOc56hFAYtRLPwu@princecluster.ns8if.mongodb.net/airbnb?retryWrites=true&w=majority&appName=PrinceCluster";
-mongoose.connect(mongoDbUrl).then(() => {
+mongoose.connect(MONGO_DB_URL).then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
   });

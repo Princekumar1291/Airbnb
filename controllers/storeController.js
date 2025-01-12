@@ -2,26 +2,24 @@ const Favourite = require("../models/Favourite");
 const Home = require("../models/Home");
 
 const getIndex = (req, res) => {
+  console.log(req.session);  
   Home.find().then((registerHomes) => {
-    const isLoggedIn = req.cookies.isLoggedIn ? req.cookies.isLoggedIn : false;
   
-    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: isLoggedIn });
+    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn });
   });
 }
 
 const getHome = (req, res) => {
   Home.find().then((registerHomes) => {
-    const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
-    res.render('store/homes', { homes: registerHomes, title: "AirBnb" , isLoggedIn: isLoggedIn});
+    res.render('store/homes', { homes: registerHomes, title: "AirBnb" , isLoggedIn: req.session.isLoggedIn});
   });
 }
 
 const getHomeDetails = (req, res) => {
   const _id = req.params._id;
   Home.findById(_id).then((home) => {
-    const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
     if (!home) res.redirect('/homes');
-    res.render('store/home-details', { home: home, title: "home-details" , isLoggedIn: isLoggedIn});
+    res.render('store/home-details', { home: home, title: "home-details" , isLoggedIn: req.session.isLoggedIn});
   }).catch(err => {
     console.error('Error fetching home:', err);
   });
@@ -30,9 +28,8 @@ const getHomeDetails = (req, res) => {
 const getFavorites = (req, res) => {
   Favourite.find().populate('homeId').then((favourites) => {
     console.log(favourites);
-    const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
     const favouriteHomes = favourites.map(favourite => favourite.homeId);
-    res.render('store/favorites', { homes: favouriteHomes, title: "Favorites", isLoggedIn: isLoggedIn });
+    res.render('store/favorites', { homes: favouriteHomes, title: "Favorites", isLoggedIn: req.session.isLoggedIn });
   })
 }
 

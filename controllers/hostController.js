@@ -2,9 +2,7 @@ const Favourite = require('../models/Favourite.js');
 const Home = require('../models/Home.js');
 
 const getAddhome = (req, res) => {
-  console.log(res.cookie.isLoggedIn);
-  const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
-  res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: isLoggedIn });
+  res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: req.session.isLoggedIn });
 }
 
 const postAddhome = (req, res, next) => {
@@ -20,8 +18,7 @@ const postAddhome = (req, res, next) => {
 
 const getHostHomes = (req, res) => {
   Home.find().then((registerHomes) => {
-    const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
-    res.render('host/host-homes', { homes: registerHomes, title: "Host Home" ,isLoggedIn: isLoggedIn});
+    res.render('host/host-homes', { homes: registerHomes, title: "Host Home" ,isLoggedIn: req.session.isLoggedIn});
   })
 }
 
@@ -33,12 +30,11 @@ const getEditHome = (req, res) => {
     if (!home) {
       return res.redirect('/host-homes');
     }
-    const isLoggedIn = req.cookies ? req.cookies.isLoggedIn : false;
     res.render('host/edit-home', {
       home: home,
       title: "Edit Home",
       editing: editing,
-      isLoggedIn: isLoggedIn
+      isLoggedIn: req.session.isLoggedIn
     });
   }).catch(err => {
     console.error('Error fetching home:', err);

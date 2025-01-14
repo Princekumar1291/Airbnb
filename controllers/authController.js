@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
 
@@ -6,10 +8,21 @@ const getLogin = (req, res) => {
   res.render('auth/login', { title: "Login", isLoggedIn: false });
 };
 
-const postLogin = (req, res) => {
-  if (req.session) {
-    req.session.isLoggedIn = true;
+const postLogin = async (req, res) => {
+  const { email, password } = req.body;
+  const user=await User.findOne({email});
+  if(!user) {
+    return res.render('auth/login', { title: "Login", error:["User not found"],isLoggedIn: false });
   }
+  const isPasswordValid=await bcrypt.compare(password,user.password);
+  if(!isPasswordValid) {
+    return res.render('auth/login', { title: "Login", error:["Invalid password"],isLoggedIn: false });
+  }
+  
+  
+  req.session.isLoggedIn=true;
+  req.session.user=user;  
+  await req.session.save();
   res.redirect('/homes');
 };
 
@@ -96,7 +109,13 @@ const postSignup = [
     }
     next();
   },
-  (req, res) => {
+  async (req, res) => {
+    await bcrypt.hash(req.body.password,10).then(hash => {
+      req.body.password = hash
+    }).catch(err => {
+      console.error('Error hashing password:', err);
+    })
+    console.log(req.body);
     const newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,

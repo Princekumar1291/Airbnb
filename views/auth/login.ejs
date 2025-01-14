@@ -29,6 +29,16 @@
                     </div>
                 </div>
 
+                <% if (typeof error !== 'undefined' && error.length > 0) { %>
+                    <div class="text-red-500 text-sm">
+                        <ul>
+                            <% error.forEach(function(err) { %>
+                                <li><%= err %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+
                 <div class="flex items-center justify-between">
                     <div class="text-sm">
                         <a href="/auth/forgot-password" class="font-medium text-indigo-600 hover:text-indigo-500">
@@ -84,3 +94,4 @@
     </div>
 </body>
 </html>
+

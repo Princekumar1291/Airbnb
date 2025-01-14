@@ -5,13 +5,13 @@ const getIndex = (req, res) => {
   console.log(req.session);  
   Home.find().then((registerHomes) => {
   
-    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn });
+    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn ,user:req.session.user});
   });
 }
 
 const getHome = (req, res) => {
   Home.find().then((registerHomes) => {
-    res.render('store/homes', { homes: registerHomes, title: "AirBnb" , isLoggedIn: req.session.isLoggedIn});
+    res.render('store/homes', { homes: registerHomes, title: "AirBnb" , isLoggedIn: req.session.isLoggedIn,user:req.session.user});
   });
 }
 
@@ -19,7 +19,7 @@ const getHomeDetails = (req, res) => {
   const _id = req.params._id;
   Home.findById(_id).then((home) => {
     if (!home) res.redirect('/homes');
-    res.render('store/home-details', { home: home, title: "home-details" , isLoggedIn: req.session.isLoggedIn});
+    res.render('store/home-details', { home: home, title: "home-details" , isLoggedIn: req.session.isLoggedIn,user:req.session.user});
   }).catch(err => {
     console.error('Error fetching home:', err);
   });
@@ -29,7 +29,7 @@ const getFavorites = (req, res) => {
   Favourite.find().populate('homeId').then((favourites) => {
     console.log(favourites);
     const favouriteHomes = favourites.map(favourite => favourite.homeId);
-    res.render('store/favorites', { homes: favouriteHomes, title: "Favorites", isLoggedIn: req.session.isLoggedIn });
+    res.render('store/favorites', { homes: favouriteHomes, title: "Favorites", isLoggedIn: req.session.isLoggedIn ,user:req.session.user});
   })
 }
 

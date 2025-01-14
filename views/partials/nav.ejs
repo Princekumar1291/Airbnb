@@ -44,20 +44,23 @@
               class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200"
               aria-current="page">Home</a>
           </li>
-          <li>
-            <a href="/host/add-home"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Add
-              Home</a>
-          </li>
-          <li>
-            <a href="/favorites"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Favourite</a>
-          </li>
-          <li>
-            <a href="/host/host-homes"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Host
-              Home</a>
-          </li>
+          <% if(user.userType==='host') {%>
+            <li>
+              <a href="/host/add-home"
+                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Add
+                Home</a>
+            </li>
+            <li>
+              <a href="/host/host-homes"
+                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Host
+                Home</a>
+            </li>
+            <% }else{ %>
+              <li>
+                <a href="/favorites"
+                  class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-rose-500 md:p-0 transition-colors duration-200">Favourite</a>
+              </li>
+              <% } %>
           <% } %>
         </ul>
       </div>

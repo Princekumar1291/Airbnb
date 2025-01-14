@@ -2,7 +2,7 @@ const Favourite = require('../models/Favourite.js');
 const Home = require('../models/Home.js');
 
 const getAddhome = (req, res) => {
-  res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: req.session.isLoggedIn });
+  res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: req.session.isLoggedIn,user:req.session.user });
 }
 
 const postAddhome = (req, res, next) => {
@@ -18,7 +18,7 @@ const postAddhome = (req, res, next) => {
 
 const getHostHomes = (req, res) => {
   Home.find().then((registerHomes) => {
-    res.render('host/host-homes', { homes: registerHomes, title: "Host Home" ,isLoggedIn: req.session.isLoggedIn});
+    res.render('host/host-homes', { homes: registerHomes, title: "Host Home" ,isLoggedIn: req.session.isLoggedIn,user:req.session.user});
   })
 }
 
@@ -34,7 +34,8 @@ const getEditHome = (req, res) => {
       home: home,
       title: "Edit Home",
       editing: editing,
-      isLoggedIn: req.session.isLoggedIn
+      isLoggedIn: req.session.isLoggedIn,
+      user:req.session.user
     });
   }).catch(err => {
     console.error('Error fetching home:', err);

@@ -26,7 +26,15 @@ const userSchema=new mongoose.Schema({
   favouriteHomes:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Home',
-  }]
+  }],
+  otp: {
+    code: {
+      type: Number,
+    },
+    expiry: {
+      type: Date,
+    },
+  },
 })
 
 module.exports=mongoose.model('User',userSchema);

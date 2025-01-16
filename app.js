@@ -11,6 +11,9 @@ const mongoose = require('mongoose');
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
 
+// Load environment variables
+// require('dotenv').config(); 
+
 // Database connection for sessions
 const sessionStore = new MongoDBStore({
   uri: MONGO_DB_URL,
@@ -56,7 +59,6 @@ app.use((req, res, next) => {
 app.use('/host', hostRouter);
 
 app.use(errorRouter)
-
 const PORT = 3000;
 mongoose.connect(MONGO_DB_URL).then(() => {
   app.listen(PORT, () => {

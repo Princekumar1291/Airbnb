@@ -1,17 +1,17 @@
-const Favourite = require("../models/Favourite");
 const Home = require("../models/Home");
+const User = require("../models/User");
 
 const getIndex = (req, res) => {
-  console.log(req.session);  
+  console.log(req.session);
   Home.find().then((registerHomes) => {
-  
-    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn ,user:req.session.user});
+
+    res.render('store/index', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn, user: req.session.user });
   });
 }
 
 const getHome = (req, res) => {
   Home.find().then((registerHomes) => {
-    res.render('store/homes', { homes: registerHomes, title: "AirBnb" , isLoggedIn: req.session.isLoggedIn,user:req.session.user});
+    res.render('store/homes', { homes: registerHomes, title: "AirBnb", isLoggedIn: req.session.isLoggedIn, user: req.session.user });
   });
 }
 
@@ -19,45 +19,53 @@ const getHomeDetails = (req, res) => {
   const _id = req.params._id;
   Home.findById(_id).then((home) => {
     if (!home) res.redirect('/homes');
-    res.render('store/home-details', { home: home, title: "home-details" , isLoggedIn: req.session.isLoggedIn,user:req.session.user});
+    res.render('store/home-details', { home: home, title: "home-details", isLoggedIn: req.session.isLoggedIn, user: req.session.user });
   }).catch(err => {
     console.error('Error fetching home:', err);
   });
 }
 
-const getFavorites = (req, res) => {
-  Favourite.find().populate('homeId').then((favourites) => {
-    console.log(favourites);
-    const favouriteHomes = favourites.map(favourite => favourite.homeId);
-    res.render('store/favorites', { homes: favouriteHomes, title: "Favorites", isLoggedIn: req.session.isLoggedIn ,user:req.session.user});
-  })
+const getFavorites =async (req, res) => {
+  const userId = req.session.user._id;
+  try {
+    const user = await User.findById(userId).populate('favouriteHomes');
+    res.render('store/favorites', { homes: user.favouriteHomes, title: "Favorites", isLoggedIn: req.session.isLoggedIn, user: req.session.user });
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+    res.redirect('/favorites');
+  }
 }
 
-const postFavorites = (req, res) => {
+const postFavorites = async (req, res) => {
   let homeId = req.body._id;
-  let fav = new Favourite({ homeId: homeId });
-  fav.save()
-    .then(() => {
-      res.redirect('/favorites');
-    })
-    .catch(err => {
-      if (err.code === 11000) { // duplicate key error code
-        console.log('Home already added to favorites');
-      } else {
-        console.error('Error adding home to favorites:', err);
-      }
-      res.redirect('/favorites');
-    });
+  const userId = req.session.user._id;
+  try {
+    const user = await User.findById(userId);
+    if (user.favouriteHomes.includes(homeId)) {
+      return res.redirect('/favorites');
+    }
+    user.favouriteHomes.push(homeId);
+    await user.save();
+    res.redirect('/favorites');
+  } catch (error) {
+    console.error('Error adding home to favorites:', error);
+    res.redirect('/favorites');
+  }
+
 }
 
-const deleteFavorites=(req,res)=>{
+const deleteFavorites = async (req, res) => {
   let homeId = req.params._id;
-  Favourite.findOneAndDelete({homeId:homeId}).then(() => {
+  const userId = req.session.user._id;
+  try {
+    const user = await User.findById(userId);
+    user.favouriteHomes.pull(homeId);
+    await user.save();
     res.redirect('/favorites');
-  }).catch(err => {
-    console.error('Error deleting home from favorites:', err);
+  } catch (error) {
+    console.error('Error deleting home from favorites:', error);
     res.redirect('/favorites');
-  })
+  }
 }
 
 

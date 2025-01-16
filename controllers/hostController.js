@@ -1,4 +1,3 @@
-const Favourite = require('../models/Favourite.js');
 const Home = require('../models/Home.js');
 
 const getAddhome = (req, res) => {
@@ -7,7 +6,8 @@ const getAddhome = (req, res) => {
 
 const postAddhome = (req, res, next) => {
   let { houseName, price, location, description, rating, photoUrl } = req.body;
-  let newHome = new Home({ houseName, price, location, description, rating, photoUrl });
+  let hostId=req.session.user._id
+  let newHome = new Home({ houseName, price, location, description, rating, photoUrl ,hostId});
   newHome.save().then(() => {
     res.redirect('/host/host-homes');
   }).catch(err => {
@@ -16,10 +16,16 @@ const postAddhome = (req, res, next) => {
   })
 }
 
-const getHostHomes = (req, res) => {
-  Home.find().then((registerHomes) => {
-    res.render('host/host-homes', { homes: registerHomes, title: "Host Home" ,isLoggedIn: req.session.isLoggedIn,user:req.session.user});
-  })
+const getHostHomes = async (req, res) => {
+  const userId = req.session.user._id;
+  try {
+    const homes=await Home.find({hostId:userId});
+    res.render('host/host-homes', { homes: homes, title: "Host Homes", isLoggedIn: req.session.isLoggedIn, user: req.session.user });
+  } catch (error) {
+    console.error('Error fetching homes:', error);
+    res.redirect('/host/host-homes');
+  }
+  
 }
 
 const getEditHome = (req, res) => {
@@ -53,18 +59,15 @@ const postEditHome = (req, res) => {
   });
 }
 
-const deleteHome = (req, res) => {
+const deleteHome =async (req, res) => {
   const _id = req.params._id;
-  Favourite.deleteOne({ homeId: _id }).then(() => {
-    console.log('Home deleted from favorites');
-  }).catch(err => {
-    console.error('Error deleting home from favorites:', err);
-  })
-  Home.findOneAndDelete(_id).then(() => {
+  try {
+    await Home.findByIdAndDelete(_id);
     res.redirect('/host/host-homes');
-  }).catch(err => {
-    console.error('Error deleting home:', err);
-  });
+  } catch (error) {
+    console.error('Error deleting home:', error);
+    res.redirect('/host/host-homes');
+  }
 }
 
 module.exports = { getAddhome, postAddhome, getHostHomes, getEditHome, postEditHome, deleteHome };

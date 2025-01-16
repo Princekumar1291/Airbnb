@@ -22,7 +22,11 @@ const userSchema=new mongoose.Schema({
     type:String,
     enum:['guest','host'],
     required:true,
-  }
+  },
+  favouriteHomes:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Home',
+  }]
 })
 
 module.exports=mongoose.model('User',userSchema);

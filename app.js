@@ -10,8 +10,6 @@ const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
-const multer  = require('multer')
-
 
 // Load environment variables
 // require('dotenv').config(); 
@@ -29,10 +27,10 @@ const storeRouter = require('./router/storeRouter');
 const rootDir = require('./utils/path-util');
 const errorRouter = require('./router/errorRouter');
 const { authRouter } = require('./router/authRouter');
+require('./utils/cloudanary-utils');
 
 //Middlewares
 app.use(express.static(path.join(rootDir, "public")));
-app.use(multer({dest: 'uploads/'}).single('photo'));
 
 app.use(session({
   secret: "Mern Live Batch",
@@ -43,6 +41,8 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
   },
 }));
+
+
 
 //Set the view engine
 app.set("view engine", "ejs"); //Set the view engine

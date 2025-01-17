@@ -1,15 +1,18 @@
 const Home = require('../models/Home.js');
+const {upload} = require('../utils/cloudanary-utils');
 
 const getAddhome = (req, res) => {
   res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: req.session.isLoggedIn,user:req.session.user });
 }
 
-const postAddhome = (req, res, next) => {
+const postAddhome = [
+  upload.single('photo'),
+  (req, res, next) => {
   let { houseName, price, location, description, rating } = req.body;
-  const photo = req.file;
-  console.log(photo);
-  const photoUrl="url";
-  console.log(req.body);
+  if(!req.file){
+    return res.redirect('/host/add-home');    
+  }
+  let photoUrl = req.file.path;
   let hostId=req.session.user._id
   let newHome = new Home({ houseName, price, location, description, rating, photoUrl ,hostId});
   newHome.save().then(() => {
@@ -18,7 +21,7 @@ const postAddhome = (req, res, next) => {
     console.error('Error adding home:', err);
     res.redirect('/host/add-home');
   })
-}
+}]
 
 const getHostHomes = async (req, res) => {
   const userId = req.session.user._id;

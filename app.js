@@ -10,6 +10,8 @@ const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
+const multer  = require('multer')
+
 
 // Load environment variables
 // require('dotenv').config(); 
@@ -30,6 +32,7 @@ const { authRouter } = require('./router/authRouter');
 
 //Middlewares
 app.use(express.static(path.join(rootDir, "public")));
+app.use(multer({dest: 'uploads/'}).single('photo'));
 
 app.use(session({
   secret: "Mern Live Batch",

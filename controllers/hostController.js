@@ -5,7 +5,11 @@ const getAddhome = (req, res) => {
 }
 
 const postAddhome = (req, res, next) => {
-  let { houseName, price, location, description, rating, photoUrl } = req.body;
+  let { houseName, price, location, description, rating } = req.body;
+  const photo = req.file;
+  console.log(photo);
+  const photoUrl="url";
+  console.log(req.body);
   let hostId=req.session.user._id
   let newHome = new Home({ houseName, price, location, description, rating, photoUrl ,hostId});
   newHome.save().then(() => {

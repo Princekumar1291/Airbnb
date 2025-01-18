@@ -1,5 +1,3 @@
-// cloudinaryConfig.js
-
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -11,16 +9,26 @@ cloudinary.config({
   api_secret: 'NyJgf4Kpgoey2yVfdbM_yQNDyPg',
 });
 
-// Set up Multer to use Cloudinary storage
-const storage = new CloudinaryStorage({
+// Storage for house photos
+const housePhotosStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'housePhotos', // Folder in Cloudinary
+    folder: 'Airbnb/housePhotos', // Folder for house photos
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif'], // Allowed file formats
   },
 });
 
-// Multer upload middleware
-const upload = multer({ storage: storage });
+// Storage for user photos
+const userPhotoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'Airbnb/userPhoto', // Folder for user photos
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'], // Allowed file formats
+  },
+});
 
-module.exports = { cloudinary, upload }; // Export both Cloudinary and the upload middleware
+// Multer upload middlewares
+const uploadHousePhotos = multer({ storage: housePhotosStorage });
+const uploadUserPhotos = multer({ storage: userPhotoStorage });
+
+module.exports = { cloudinary, uploadHousePhotos, uploadUserPhotos };

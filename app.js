@@ -27,7 +27,6 @@ const storeRouter = require('./router/storeRouter');
 const rootDir = require('./utils/path-util');
 const errorRouter = require('./router/errorRouter');
 const { authRouter } = require('./router/authRouter');
-require('./utils/cloudanary-utils');
 
 //Middlewares
 app.use(express.static(path.join(rootDir, "public")));
@@ -49,7 +48,7 @@ app.set("view engine", "ejs"); //Set the view engine
 app.set("views", path.join(rootDir, "views")); //Set the views directory
 
 
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(storeRouter);
 app.use("/auth",authRouter);
 

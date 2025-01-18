@@ -1,13 +1,15 @@
 const Home = require('../models/Home.js');
-const {upload} = require('../utils/cloudanary-utils');
+const {uploadHousePhotos} = require('../utils/cloudanary-utils');
 
 const getAddhome = (req, res) => {
   res.render('host/edit-home', { title: "Add Home", editing: false,isLoggedIn: req.session.isLoggedIn,user:req.session.user });
 }
 
 const postAddhome = [
-  upload.single('photo'),
+  uploadHousePhotos.single('photo'),
   (req, res, next) => {
+    console.log(req.file);
+    console.log(req.body);
   let { houseName, price, location, description, rating } = req.body;
   if(!req.file){
     return res.redirect('/host/add-home');    

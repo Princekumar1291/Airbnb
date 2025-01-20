@@ -1,7 +1,7 @@
-const MONGO_DB_URL = "mongodb+srv://princekumar7320918928:pAOc56hFAYtRLPwu@princecluster.ns8if.mongodb.net/airbnb?retryWrites=true&w=majority&appName=PrinceCluster";
 
 //Core modules
 const path = require('path');
+const fs=require('fs');
 
 //External modules
 const express = require('express');
@@ -10,15 +10,24 @@ const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
+const helmet = require('helmet');
+const compression = require('compression');
+
+
 
 // Load environment variables
-// require('dotenv').config(); 
+require('dotenv').config(); 
+
+// Database url
+const MONGO_DB_URL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@princecluster.ns8if.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=PrinceCluster`;
 
 // Database connection for sessions
 const sessionStore = new MongoDBStore({
   uri: MONGO_DB_URL,
   collection: 'sessions'
 });
+
+
 
 
 //Internal modules
@@ -28,8 +37,24 @@ const rootDir = require('./utils/path-util');
 const errorRouter = require('./router/errorRouter');
 const { authRouter } = require('./router/authRouter');
 
+
+
 //Middlewares
 app.use(express.static(path.join(rootDir, "public")));
+app.use(compression());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "*.cloudinary.com"], // Allow Cloudinary images
+      // scriptSrc: ["'self'", "'unsafe-inline'", "*.cloudinary.com"],
+      // styleSrc: ["'self'", "'unsafe-inline'"],
+      // connectSrc: ["'self'", "*.cloudinary.com"],
+      // frameSrc: ["'self'", "*.cloudinary.com"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Disable if you are embedding resources from other origins
+}));
 
 app.use(session({
   secret: "Mern Live Batch",
@@ -40,6 +65,9 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
   },
 }));
+
+
+
 
 
 
@@ -61,7 +89,9 @@ app.use((req, res, next) => {
 app.use('/host', hostRouter);
 
 app.use(errorRouter)
-const PORT = 3000;
+
+
+const PORT = process.env.PORT || 3000;
 mongoose.connect(MONGO_DB_URL).then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

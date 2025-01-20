@@ -1,4 +1,3 @@
-require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -134,7 +133,7 @@ const postSignup = [
       await newUser.save();
       const msg = {
         from: {
-          email: "princekumar12206676@gmail.com"
+          email: process.env.SENDER_EMAIL
         },
         personalizations: [
           {
@@ -193,7 +192,7 @@ const postForgotPassword = async (req, res) => {
   await user.save();
   const msg = {
     from: {
-      email: "princekumar12206676@gmail.com"
+      email: process.env.SENDER_EMAIL
     },
     personalizations: [
       {

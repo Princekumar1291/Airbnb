@@ -27,8 +27,26 @@ const userPhotoStorage = new CloudinaryStorage({
   },
 });
 
+
+const deleteHomeByUrl = async (photoUrl) => {
+  const publicId = photoUrl
+    .split('/image/upload/')[1] // Get everything after "/image/upload/"
+    .split('.')[0] // Remove the file extension
+    .split('/')
+    .slice(1) // Remove the leading slash
+    .join('/');
+  console.log(publicId);
+  try {
+    // Delete the image from Cloudinary
+    await cloudinary.uploader.destroy(publicId);
+    console.log('Previous photo successfully deleted from Cloudinary.');
+  } catch (err) {
+    console.error('Error deleting previous photo from Cloudinary:', err);
+  }
+};
+
 // Multer upload middlewares
 const uploadHousePhotos = multer({ storage: housePhotosStorage });
 const uploadUserPhotos = multer({ storage: userPhotoStorage });
 
-module.exports = { cloudinary, uploadHousePhotos, uploadUserPhotos };
+module.exports = { cloudinary, uploadHousePhotos, uploadUserPhotos, deleteHomeByUrl };

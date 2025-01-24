@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npx tailwindcss -i ./public/input.css -o ./public/output.css --watch\" \"nodemon server.js\"",
+    "start": "node server.js",
+    "dev": "concurrently \"npx tailwindcss -i ./public/input.css -o ./public/output.css --watch\" \"nodemon server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
